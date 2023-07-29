@@ -11,7 +11,7 @@ from models import storage
 from models.user import User
 
 
-@app_views.route("/users", methods=["GET"])
+@app_views.route("/users/", methods=["GET"])
 def list_users():
     """Retrieves the list of all User objects"""
     user_objs = storage.all(User)
@@ -42,14 +42,16 @@ def delete_user(user_id):
     return jsonify({})
 
 
-@app_views.route("/users", methods=["POST"])
+@app_views.route("/users/", methods=["POST"])
 def create_user():
     """Creates a new User and stores it"""
     user_data = request.get_json()
     if not user_data:
         abort(400, "Not a JSON")
-    if 'name' not in user_data:
-        abort(400, "Missing name")
+    if 'email' not in user_data:
+        abort(400, "Missing email")
+    if 'password' not in user_data:
+        abort(400, "Missing password")
     user = User(**user_data)
     user.save()
     return jsonify(user.to_dict()), 201
@@ -68,7 +70,7 @@ def update_user(user_id):
     if not user_data:
         abort(400, "Not a JSON")
     for key, value in user_data.items():
-        keys_to_ignore = ["id", "created_at", "updated_at"]
+        keys_to_ignore = ["id", "created_at", "updated_at", "email"]
         if key not in keys_to_ignore:
             setattr(user, key, value)
     user.save()
