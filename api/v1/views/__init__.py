@@ -7,7 +7,7 @@ This module creates a variable app_views which is an instance of Blueprint
 from flask import Blueprint
 
 app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')
-state_views = Blueprint('app_views', __name__, url_prefix='/api/v1/states')
+state_views = Blueprint('state_views', __name__, url_prefix='/api/v1/states')
 amenity_views = Blueprint('amenity_views', __name__, url_prefix='/api/v1/amenities')
 user_views = Blueprint('user_views', __name__, url_prefix='/api/v1/users')
 
