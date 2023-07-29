@@ -81,6 +81,9 @@ def create_city(state_id):
     if "name" not in json_data.keys():
         abort(400, description="Missing name")
 
+    if json_data["name"] == "":
+        abort(400, description="Missing name")
+
     state_id_cln = escape(state_id)
     key = "State." + state_id_cln
 
