@@ -31,7 +31,7 @@ def get_user(user_id):
     return jsonify(user.to_dict())
 
 
-@user_views.route("/<user_id>", methods=["DELETE"])
+@user_views.route("/<string:user_id>", methods=["DELETE"])
 def delete_user(user_id):
     """Deletes a User object by id"""
     user = storage.get(User, user_id)
@@ -57,7 +57,7 @@ def create_user():
     return jsonify(user.to_dict()), 201
 
 
-@user_views.route("/<user_id>", methods=["PUT"])
+@user_views.route("/<string:user_id>", methods=["PUT"])
 def update_user(user_id):
     """Updates a User given by user_id and stores it"""
     user = storage.get(User, user_id)
