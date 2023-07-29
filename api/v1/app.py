@@ -15,6 +15,10 @@ import os
 
 app = Flask(__name__)
 app.register_blueprint(app_views, url_prefix="/api/v1")
+app.register_blueprint(state_views, url_prefix="/api/v1/states",
+                       name='state_views')
+app.register_blueprint(amenity_views, url_prefix="/api/v1/amenities",
+                       name='amenitiy_views')
 
 
 @app.teardown_appcontext
