@@ -6,12 +6,12 @@ handles all default RESTFul API actions
 """
 
 from flask import jsonify, abort, request
-from api.v1.views import app_views
+from api.v1.views import user_views
 from models import storage
 from models.user import User
 
 
-@app_views.route("/users/", methods=["GET"])
+@user_views.route("/", methods=["GET"])
 def list_users():
     """Retrieves the list of all User objects"""
     user_objs = storage.all(User)
@@ -21,7 +21,7 @@ def list_users():
     return jsonify(users_list)
 
 
-@app_views.route("/users/<user_id>", methods=["GET"])
+@user_views.route("/<user_id>", methods=["GET"])
 def get_user(user_id):
     """Retrieves a User object by id"""
     user = storage.get(User, user_id)
@@ -31,7 +31,7 @@ def get_user(user_id):
     return jsonify(user.to_dict())
 
 
-@app_views.route("/users/<user_id>", methods=["DELETE"])
+@user_views.route("/<user_id>", methods=["DELETE"])
 def delete_user(user_id):
     """Deletes a User object by id"""
     user = storage.get(User, user_id)
@@ -42,7 +42,7 @@ def delete_user(user_id):
     return jsonify({})
 
 
-@app_views.route("/users/", methods=["POST"])
+@user_views.route("/", methods=["POST"])
 def create_user():
     """Creates a new User and stores it"""
     user_data = request.get_json()
@@ -57,7 +57,7 @@ def create_user():
     return jsonify(user.to_dict()), 201
 
 
-@app_views.route("/users/<user_id>", methods=["PUT"])
+@user_views.route("/<user_id>", methods=["PUT"])
 def update_user(user_id):
     """Updates a User given by user_id and stores it"""
     user = storage.get(User, user_id)
