@@ -29,8 +29,6 @@ def get_state_cities(state_id):
         if retrieved:
             for city in retrieved:
                 output.append(city.to_dict())
-        else:
-            abort(404)
 
         return jsonify(output)
     else:
@@ -81,9 +79,6 @@ def create_city(state_id):
         abort(400, description="Not a JSON")
 
     if "name" not in json_data.keys():
-        abort(400, description="Missing name")
-
-    if json_data["name"] == "":
         abort(400, description="Missing name")
 
     state_id_cln = escape(state_id)
