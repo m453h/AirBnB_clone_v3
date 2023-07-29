@@ -44,7 +44,6 @@ def get_city(city_id):
     objs = storage.all(City)
 
     if key in objs:
-        print(city_id_cln)
         return jsonify(objs[key].to_dict())
     else:
         abort(404)
@@ -101,6 +100,9 @@ def create_city(state_id):
 @app_views.route("/cities/<city_id>", methods=["PUT"])
 def update_city(city_id):
     """ Updates a City object """
+    if len(request.data) == 0:
+        abort(400, "Not a JSON")
+
     try:
         json_data = request.get_json()
     except Exception:
