@@ -21,7 +21,7 @@ def list_places(city_id):
             places_list.append(place.to_dict())
 
     if not places_list:
-        return jsonify({})
+        abort(404)
     return jsonify(places_list)
 
 
