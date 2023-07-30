@@ -12,6 +12,7 @@ from api.v1.views import state_views
 from api.v1.views import amenity_views
 from api.v1.views import place_views
 from api.v1.views import city_views
+from api.v1.views import user_views
 import os
 
 
@@ -23,6 +24,8 @@ app.register_blueprint(amenity_views, url_prefix="/api/v1/amenities",
                        name='amenitiy_views')
 app.register_blueprint(place_views)
 app.register_blueprint(city_views)
+app.register_blueprint(user_views, url_prefix="/api/v1/users",
+                       name='user_views')
 
 
 @app.teardown_appcontext
