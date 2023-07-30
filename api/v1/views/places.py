@@ -19,6 +19,9 @@ def list_places(city_id):
     for place in places_objs.values():
         if place.city_id == city_id:
             places_list.append(place.to_dict())
+
+    if not places_list:
+        return jsonify({})
     return jsonify(places_list)
 
 
