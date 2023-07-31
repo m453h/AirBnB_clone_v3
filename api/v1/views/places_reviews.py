@@ -80,23 +80,15 @@ def create_review(place_id):
 
     new_review = Review(**json_data)
     setattr(new_review, "place_id", place_id)
-    storage.new(new_review)
-    storage.save()
+    new_review.save()
     return jsonify(new_review.to_dict()), 201
 
 
-@app_views.route("/reviews/<review_id>", methods=["PUT"],
+@app_views.route("/reviews/<string:review_id>", methods=["PUT"],
                  strict_slashes=False)
 def update_review(review_id):
     """ Updates a Review object """
-    if len(request.data) == 0:
-        abort(400, "Not a JSON")
-
-    try:
-        json_data = request.get_json()
-    except Exception:
-        abort(400, description="Not a JSON")
-
+    json_data = request.get_json()
     if not json_data:
         abort(400, description="Not a JSON")
 
