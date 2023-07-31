@@ -108,60 +108,63 @@ def places_search():
     except Exception:
         abort(400, "Not a JSON")
 
-    output = []
-    pre_output = []
+    if json_data:
+        states = json_data.get('states', None)
+        cities = json_data.get('cities', None)
+        amenities = json_data.get('amenities', None)
 
-    if len(json_data) == 0:
-        places = storage.all(Place)
-        for place in places.values():
-            output.append(place.to_dict())
-        return output
+    if not json_data or (not states and not cities and
+                         not amenities):
+        places = storage.all(Place).values()
+        places_list = []
+        for place in places:
+            places_list.append(place.to_dict())
+        return jsonify(places_list)
 
-    if "states" in json_data and len(json_data["states"]) != 0:
-        for state_id in json_data["states"]:
+    places_list = []
+    if states:
+        for state_id in states:
             state = storage.get(State, state_id)
-            state_cities = state.cities
-            for city in state_cities:
-                places = city.places
-                for place in places:
-                    pre_output.append(place)
-
-    if "cities" in json_data and len(json_data["cities"]) != 0:
-        for city_id in json_data["cities"]:
+            if state:
+                for city in state.cities:
+                    if city:
+                        places_list.extend(city.places)
+    if cities:
+        city_objs = []
+        for city_id in cities:
             city = storage.get(City, city_id)
-            if "states" in json_data and len(json_data["states"]) != 0:
-                if city.state_id in json_data["states"]:
-                    continue
-            places = city.places
-            for place in places:
-                pre_output.append(place)
+            if city:
+                city_objs.append(city)
+        for city in city_objs:
+            if city:
+                for place in city.places:
+                    if place not in places_list:
+                        places_list.append(place)
+    if amenities:
+        if not places_list:
+            places_list = storage.all(Place).values()
+        amenity_objs = []
+        for amenity_id in amenities:
+            amenity = storage.get(Amenity, amenity_id)
+            if amenity:
+                amenity_objs.append(amenity)
 
-    if len(pre_output) == 0:
-        places = storage.all(Place)
-        for place in places.values():
-            pre_output.append(place)
+        new_places_list = []
+        for place in places_list:
+            all_amenities_present = True
+            for amenity in amenities_obj:
+                if amenity not in place.amenities:
+                    all_amenities_present = False
+                    break
+            if all_amenities_present:
+                new_places_list.append(place)
 
-    if "amenities" in json_data and len(json_data["amenities"]) != 0:
-        for place in pre_output:
-            not_present = 0
-            amenity_ids = []
-            if getenv("HBNB_TYPE_STORAGE") == "db":
-                amenities = place.amenities
-                for amenity in amenities:
-                    amenity_ids.append(amenity.id)
-            else:
-                amenity_ids = place.amenity_ids
+        places_list = new_places_list
 
-            if all(amen_id in amenity_ids for amen_id
-                   in json_data["amenities"]):
-                place_dict = place.to_dict()
-                if getenv("HBNB_TYPE_STORAGE") == "db":
-                    del place_dict["amenities"]
-                else:
-                    del place_dict["amenity_ids"]
-                output.append(place_dict)
-    else:
-        for place in pre_output:
-            output.append(place.to_dict())
+    results = []
+    for place in places_list:
+        place_dict = place.to_dict()
+        place_dict.pop('amenities', None)
+        results.append(place_dict)
 
-    return jsonify(output), 200
+    return jsonify(results)
