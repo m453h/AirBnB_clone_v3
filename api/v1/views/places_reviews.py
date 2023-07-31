@@ -17,15 +17,14 @@ from models.user import User
 @app_views.route("/places/<place_id>/reviews", methods=["GET"])
 def get_place_reviews(place_id):
     """ Retrieves the list of all Review objects of a Place """
-    place_id_cln = escape(place_id)
     output = []
 
-    place = storage.get(Place, place_id_cln)
+    place = storage.get(Place, place_id)
     if place is None:
         abort(404)
 
     reviews = place.reviews
-            
+
     for review in reviews:
         output.append(review.to_dict())
 
@@ -35,9 +34,7 @@ def get_place_reviews(place_id):
 @app_views.route("/reviews/<review_id>", methods=["GET"])
 def get_review(review_id):
     """ Retrieves a Review object """
-    review_id_cln = escape(review_id)
-
-    review = storage.get(Review, review_id_cln)
+    review = storage.get(Review, review_id)
     if review is None:
         abort(404)
 
@@ -47,9 +44,7 @@ def get_review(review_id):
 @app_views.route("/reviews/<review_id>", methods=["DELETE"])
 def delete_review(review_id):
     """ Deletes a Review object """
-    review_id_cln = escape(review_id)
-
-    review = storage.get(Review, review_id_cln)
+    review = storage.get(Review, review_id)
     if review is None:
         abort(404)
 
@@ -78,19 +73,19 @@ def create_review(place_id):
     if "text" not in json_data.keys():
         abort(400, description="Missing text")
 
-    place_id_cln = escape(place_id)
-    place = storage.get(Place, place_id_cln)
+    place = storage.get(Place, place_id)
     if place is None:
         abort(404)
 
-    user_id_cln = escape(json_data["user_id"])
-    user = storage.get(User, user_id_cln)
+    user_id = json_data["user_id"]
+    user = storage.get(User, user_id)
     if user is None:
         abort(404)
 
     new_review = Review(**json_data)
-    setattr(new_review, "place_id", place_id_cln)
-    new_review.save()
+    setattr(new_review, "place_id", place_id)
+    storage.new(new_review)
+    storage.save()
     return jsonify(new_review.to_dict()), 201
 
 
@@ -108,8 +103,7 @@ def update_review(review_id):
     if not json_data:
         abort(400, description="Not a JSON")
 
-    review_id_cln = escape(review_id)
-    review = storage.get(Review, review_id_cln)
+    review = storage.get(Review, review_id)
     if review is None:
         abort(404)
 
