@@ -30,7 +30,6 @@ app.register_blueprint(user_views, url_prefix="/api/v1/users",
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
 
-
 @app.teardown_appcontext
 def teardown_db(exception):
     """remove the current SQLAlchemy Session"""
