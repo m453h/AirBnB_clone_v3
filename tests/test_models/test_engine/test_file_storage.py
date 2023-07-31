@@ -113,3 +113,67 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+
+class TestFileStorageGetandCount(unittest.TestCase):
+    """Test the FileStorage class get and count methods """
+    @classmethod
+    def setUpClass(cls):
+        """ Set up for get and count methods """
+        storage = FileStorage()
+
+        state = State(name="California")
+        state.save()
+
+        city = City(state_id=state.id, name="San Francisco")
+        city.save()
+
+        user = User(email="john@snow.com", password="johnpwd")
+        user.save()
+
+        place_1 = Place(user_id=user.id, city_id=city.id, name="House 1")
+        place_1.save()
+        place_2 = Place(user_id=user.id, city_id=city.id, name="House 2")
+        place_2.save()
+
+        amenity_1 = Amenity(name="Wifi")
+        amenity_1.save()
+        amenity_2 = Amenity(name="Cable")
+        amenity_2.save()
+        amenity_3 = Amenity(name="Oven")
+        amenity_3.save()
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing db storage")
+    def test_get_returns_obj(self):
+        """Test that get() returns object with valid id"""
+        state1 = self.storage.get(State, self.state.id)
+        user1 = self.storage.get(User, self.user.id)
+        place1 = self.storage.get(Place, self.place_1.id)
+
+        self.assertEqual(user1.id, self.user.id)
+        self.assertEqual(state1.id, self.state.id)
+        self.assertEqual(place1.id, self.place_1.id)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing db storage")
+    def test_get_no_cls(self):
+        """Test that get() returns None if id is not valid"""
+        state1 = self.storage.get(State, "12345678")
+        self.assertTrue(state1 is None)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing db storage")
+    def test_count_with_cls(self):
+        """test that count() returns the number of objects
+        based on given class"""
+        num_amenity = self.storage.count(Amenity)
+        self.assertTrue(num_amenity == 3)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing db storage")
+    def test_count_no_class(self):
+        """Test that count returns number of all objects in storage"""
+        num_objs = self.storage.count()
+        self.assertTrue(num_objs == 8)
+
+    @classmethod
+    def tearDownClass(cls):
+        """ Cleans up at the end of the unit tests """
+        self.storage.close()
