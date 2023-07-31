@@ -44,6 +44,13 @@ def handle_not_found(err):
     return response
 
 
+@app.errorhandler(400)
+def handle_bad_request(err):
+    """ returns a JSON-formatted 400 status code response """
+    error = str(err).split(": ")
+    return jsonify(error=error[1]), 400
+
+
 if __name__ == "__main__":
     if "HBNB_API_HOST" in os.environ:
         host = os.getenv("HBNB_API_HOST")
