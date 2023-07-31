@@ -152,7 +152,7 @@ def places_search():
         new_places_list = []
         for place in places_list:
             all_amenities_present = True
-            for amenity in amenities_obj:
+            for amenity in amenity_objs:
                 if amenity not in place.amenities:
                     all_amenities_present = False
                     break
