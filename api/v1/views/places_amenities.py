@@ -20,6 +20,7 @@ def get_place_amenities(place_id):
     output = []
 
     place = storage.get(Place, place_id)
+    print(place_id)
     if place is None:
         abort(404)
 
