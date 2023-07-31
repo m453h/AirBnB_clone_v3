@@ -10,6 +10,7 @@ from models.place import Place
 from models.city import City
 from models.user import User
 from models.state import State
+from models.amenity import Amenity
 from os import getenv
 
 
@@ -99,7 +100,7 @@ def update_place(place_id):
     return jsonify(place), 200
 
 
-@app_views.route("/places_search", methods=["POST"], strict_slashes=False)
+@app_views.route("/places_search", methods=["POST"])
 def places_search():
     """ Retrieves all Place objects depending of the JSON
     in the body of the request.
@@ -153,13 +154,11 @@ def places_search():
             else:
                 amenity_ids = place.amenity_ids
 
-            for amen_id in json_data["amenities"]:
-                if amen_id not in amenity_ids:
-                    not_present += 1
+            if all(amen_id in amenity_ids for amen_id in json_data["amenities"]):
+                delattr(place, "amenity_ids")
+                output.append(place.to_dict())
+    else:
+        for place in pre_output:
+            output.append(place.to_dict())
 
-            if not_present > 0:
-                pre_output.remove(place)
-
-    for place in pre_output:
-        output.append(place.to_dict())
     return jsonify(output), 200
