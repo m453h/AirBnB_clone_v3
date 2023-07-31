@@ -9,7 +9,6 @@ from sqlalchemy.orm import relationship
 import hashlib
 
 
-
 class User(BaseModel, Base):
     """Representation of a user """
     if models.storage_t == 'db':
