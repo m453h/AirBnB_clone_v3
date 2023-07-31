@@ -4,7 +4,7 @@ This module handles the view for Place objects that handles
 all default RESTFul API actions
 """
 from flask import jsonify, abort, request
-from api.v1.views import place_views, city_views, app_views
+from api.v1.views import place_views, city_views
 from models import storage
 from models.place import Place
 from models.city import City
@@ -92,20 +92,3 @@ def update_place(place_id):
     storage.save()
     place = place.to_dict()
     return jsonify(place), 200
-
-
-@app_views.route("/places_search", methods=["GET"])
-def places_search():
-    """ Retrieves all Place objects depending of the JSON
-    in the body of the request.
-    """
-    place_data = request.get_json()
-    output = []
-    if not place_data:
-        abort(400, "Not a JSON")
-
-    if len(place_data) == 0:
-        places = storage.all(Place)
-        for place in places:
-            output.append(place.to_dict())
-        return output
