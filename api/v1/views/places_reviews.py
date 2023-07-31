@@ -14,7 +14,8 @@ from models.place import Place
 from models.user import User
 
 
-@app_views.route("/places/<place_id>/reviews", methods=["GET"])
+@app_views.route("/places/<place_id>/reviews", methods=["GET"],
+                 strict_slashes=False)
 def get_place_reviews(place_id):
     """ Retrieves the list of all Review objects of a Place """
     output = []
@@ -31,7 +32,8 @@ def get_place_reviews(place_id):
     return jsonify(output)
 
 
-@app_views.route("/reviews/<review_id>", methods=["GET"])
+@app_views.route("/reviews/<review_id>", methods=["GET"],
+                 strict_slashes=False)
 def get_review(review_id):
     """ Retrieves a Review object """
     review = storage.get(Review, review_id)
@@ -41,7 +43,8 @@ def get_review(review_id):
     return jsonify(review.to_dict())
 
 
-@app_views.route("/reviews/<review_id>", methods=["DELETE"])
+@app_views.route("/reviews/<review_id>", methods=["DELETE"],
+                 strict_slashes=False)
 def delete_review(review_id):
     """ Deletes a Review object """
     review = storage.get(Review, review_id)
@@ -53,7 +56,8 @@ def delete_review(review_id):
     return jsonify({})
 
 
-@app_views.route("/places/<place_id>/reviews", methods=["POST"])
+@app_views.route("/places/<place_id>/reviews", methods=["POST"],
+                 strict_slashes=False)
 def create_review(place_id):
     """ Creates a Review """
     try:
@@ -89,7 +93,8 @@ def create_review(place_id):
     return jsonify(new_review.to_dict()), 201
 
 
-@app_views.route("/reviews/<review_id>", methods=["PUT"])
+@app_views.route("/reviews/<review_id>", methods=["PUT"],
+                 strict_slashes=False)
 def update_review(review_id):
     """ Updates a Review object """
     if len(request.data) == 0:
