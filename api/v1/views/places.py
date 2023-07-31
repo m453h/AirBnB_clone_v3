@@ -21,14 +21,10 @@ def list_places(city_id):
     city = storage.get("City", city_id)
     if city is None:
         abort(404)
-    places_objs = storage.all(Place)
     places_list = []
-    for place in places_objs.values():
-        if place.city_id == city_id:
-            places_list.append(place.to_dict())
-
-    if not places_list:
-        abort(404)
+    places = city.places
+    for place in places:
+        places_list.append(place.to_dict())
     return jsonify(places_list)
 
 
