@@ -94,7 +94,6 @@ def update_place(place_id):
         if key not in keys_to_ignore:
             setattr(place, key, value)
     place.save()
-    storage.save()
     place = place.to_dict()
     return jsonify(place), 200
 
