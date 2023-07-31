@@ -18,6 +18,9 @@ from os import getenv
                   strict_slashes=False)
 def list_places(city_id):
     """Retrieves the list of all places objects in a city"""
+    city = storage.get("City", city_id)
+    if city is None:
+        abort(404)
     places_objs = storage.all(Place)
     places_list = []
     for place in places_objs.values():
