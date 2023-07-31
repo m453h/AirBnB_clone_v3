@@ -18,8 +18,6 @@ import os
 
 
 app = Flask(__name__)
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-
 app.register_blueprint(app_views, url_prefix="/api/v1")
 app.register_blueprint(state_views, url_prefix="/api/v1/states",
                        name='state_views')
@@ -60,7 +58,7 @@ if __name__ == "__main__":
         host = "0.0.0.0"
 
     if "HBNB_API_PORT" in os.environ:
-        port = int(os.getenv("HBNB_API_PORT"))
+        port = os.getenv("HBNB_API_PORT")
     else:
         port = 5000
 
