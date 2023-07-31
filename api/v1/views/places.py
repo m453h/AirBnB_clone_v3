@@ -154,7 +154,8 @@ def places_search():
             else:
                 amenity_ids = place.amenity_ids
 
-            if all(amen_id in amenity_ids for amen_id in json_data["amenities"]):
+            if all(amen_id in amenity_ids for amen_id
+                   in json_data["amenities"]):
                 place_dict = place.to_dict()
                 if getenv("HBNB_TYPE_STORAGE") == "db":
                     del place_dict["amenities"]
