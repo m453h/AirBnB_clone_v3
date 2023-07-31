@@ -6,6 +6,7 @@ registers the blueprint app_views to your Flask instance app
 """
 
 from flask import Flask, jsonify, make_response
+from flask_cors import CORS
 from models import storage
 from api.v1.views import app_views
 from api.v1.views import state_views
@@ -26,6 +27,8 @@ app.register_blueprint(place_views)
 app.register_blueprint(city_views)
 app.register_blueprint(user_views, url_prefix="/api/v1/users",
                        name='user_views')
+cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
+
 
 
 @app.teardown_appcontext
