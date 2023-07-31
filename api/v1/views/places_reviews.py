@@ -24,10 +24,10 @@ def get_place_reviews(place_id):
     if place is None:
         abort(404)
 
-    reviews = place.reviews
-
-    for review in reviews:
-        output.append(review.to_dict())
+    reviews = storage.all(Review)
+    for review in reviews.values():
+        if review.place_id == place.id:
+            output.append(review.to_dict())
 
     return jsonify(output)
 
