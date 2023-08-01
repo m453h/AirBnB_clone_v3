@@ -140,3 +140,16 @@ class TestDBStorageMethods(unittest.TestCase):
     def tearDownClass(cls):
         """ Cleans up at the end of the unit tests """
         cls.storage.close()
+
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
+    def test_count(self):
+        """Test adding an object to the database"""
+        initial_count = models.storage.count()
+        self.assertEqual(models.storage.count("Any"), 0)
+        new_state = State(name="California")
+        new_state.save()
+        new_user = User(email="john@snow.com", password="password")
+        new_user.save()
+        self.assertEqual(models.storage.count("State"), initial_count + 1)
+        self.assertEqual(models.storage.count(), initial_count + 2)
