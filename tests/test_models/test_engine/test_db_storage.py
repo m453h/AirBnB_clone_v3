@@ -80,11 +80,7 @@ class TestDBStorageMethods(unittest.TestCase):
     def setUpClass(cls):
         """ Set up for get and count methods """
         cls.storage = DBStorage()
-        cls.storage.connect(host=HBNB_MYSQL_HOST,
-                            user=HBNB_MYSQL_USER,
-                            password=HBNB_MYSQL_PWD,
-                            database=HBNB_MYSQL_DB)
-        Base.metadata.create_all(cls.storage._DBStorage__engine)
+        cls.storage.reload()
 
         cls.state = State(name="California")
         cls.state.save()
