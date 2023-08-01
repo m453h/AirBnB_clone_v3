@@ -22,6 +22,12 @@ DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
 
+HBNB_MYSQL_USER = os.getenv('HBNB_MYSQL_USER')
+HBNB_MYSQL_PWD = os.getenv('HBNB_MYSQL_PWD')
+HBNB_MYSQL_HOST = os.getenv('HBNB_MYSQL_HOST')
+HBNB_MYSQL_DB = os.getenv('HBNB_MYSQL_DB')
+HBNB_ENV = os.getenv('HBNB_ENV')
+
 
 class TestDBStorageDocs(unittest.TestCase):
     """Tests to check the documentation and style of DBStorage class"""
@@ -73,28 +79,35 @@ class TestDBStorageMethods(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ Set up for get and count methods """
-        storage = DBStorage()
+        cls.storage = DBStorage()
+        cls.storage.connect(host=HBNB_MYSQL_HOST,
+                            user=HBNB_MYSQL_USER,
+                            password=HBNB_MYSQL_PWD,
+                            database=HBNB_MYSQL_DB)
+        Base.metadata.create_all(cls.storage._DBStorage__engine)
 
-        state = State(name="California")
-        state.save()
+        cls.state = State(name="California")
+        cls.state.save()
 
-        city = City(state_id=state.id, name="San Francisco")
-        city.save()
+        cls.city = City(state_id=cls.state.id, name="San Francisco")
+        cls.city.save()
 
-        user = User(email="john@snow.com", password="johnpwd")
-        user.save()
+        cls.user = User(email="john@snow.com", password="johnpwd")
+        cls.user.save()
 
-        place_1 = Place(user_id=user.id, city_id=city.id, name="House 1")
-        place_1.save()
-        place_2 = Place(user_id=user.id, city_id=city.id, name="House 2")
-        place_2.save()
+        cls.place_1 = Place(user_id=cls.user.id,
+                            city_id=cls.city.id, name="House 1")
+        cls.place_1.save()
+        cls.place_2 = Place(user_id=cls.user.id,
+                            city_id=cls.city.id, name="House 2")
+        cls.place_2.save()
 
-        amenity_1 = Amenity(name="Wifi")
-        amenity_1.save()
-        amenity_2 = Amenity(name="Cable")
-        amenity_2.save()
-        amenity_3 = Amenity(name="Oven")
-        amenity_3.save()
+        cls.amenity_1 = Amenity(name="Wifi")
+        cls.amenity_1.save()
+        cls.amenity_2 = Amenity(name="Cable")
+        cls.amenity_2.save()
+        cls.amenity_3 = Amenity(name="Oven")
+        cls.amenity_3.save()
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get_returns_obj(self):
@@ -129,4 +142,4 @@ class TestDBStorageMethods(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """ Cleans up at the end of the unit tests """
-        self.storage.close()
+        cls.storage.close()
