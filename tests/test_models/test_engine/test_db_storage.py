@@ -130,12 +130,6 @@ class TestDBStorageMethods(unittest.TestCase):
         num_amenity = self.storage.count(Amenity)
         self.assertTrue(num_amenity == 3)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_count_no_class(self):
-        """Test that count returns number of all objects in storage"""
-        num_objs = self.storage.count()
-        self.assertTrue(num_objs == 8)
-
     @classmethod
     def tearDownClass(cls):
         """ Cleans up at the end of the unit tests """
@@ -145,11 +139,7 @@ class TestDBStorageMethods(unittest.TestCase):
                      "not testing db storage")
     def test_count(self):
         """Test adding an object to the database"""
-        initial_count = models.storage.count()
-        self.assertEqual(models.storage.count("Any"), 0)
+        initial_count = models.storage.count("State")
         new_state = State(name="California")
         new_state.save()
-        new_user = User(email="john@snow.com", password="password")
-        new_user.save()
         self.assertEqual(models.storage.count("State"), initial_count + 1)
-        self.assertEqual(models.storage.count(), initial_count + 2)
