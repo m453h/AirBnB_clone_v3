@@ -22,9 +22,11 @@ def list_places(city_id):
     if city is None:
         abort(404)
     places_list = []
-    places = city.places
-    for place in places:
-        places_list.append(place.to_dict())
+    places = storage.all(Place)
+    for place in places.values():
+        if place.city_id == city_id:
+            places_list.append(place.to_dict())
+
     return jsonify(places_list)
 
 
@@ -70,8 +72,8 @@ def create_place(city_id):
     if 'name' not in place_data:
         abort(400, "Missing name")
 
-    setattr(place, "city_id", city_id)
     place = Place(**place_data)
+    setattr(place, "city_id", city_id)
     place.save()
     return jsonify(place.to_dict()), 201
 
@@ -106,6 +108,9 @@ def places_search():
     try:
         json_data = request.get_json()
     except Exception:
+        abort(400, "Not a JSON")
+
+    if not request.is_json:
         abort(400, "Not a JSON")
 
     if json_data:
