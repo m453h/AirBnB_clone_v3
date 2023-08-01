@@ -74,6 +74,7 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
+@unittest.skipIf(models.storage_t != 'db', "Testing DBstorage")
 class TestDBStorageMethods(unittest.TestCase):
     """Test the DBStorage class"""
     @classmethod
