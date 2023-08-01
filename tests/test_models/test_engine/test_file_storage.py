@@ -181,3 +181,18 @@ class TestFileStorageGetandCount(unittest.TestCase):
         with open("file.json", "w") as file:
             file.write("{}")
         cls.storage.close()
+
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
+                     "not testing file storage")
+    def test_count(self):
+        storage = FileStorage()
+        initial_length = len(storage.all())
+        self.assertEqual(storage.count(), initial_length)
+        state_len = len(storage.all("State"))
+        self.assertEqual(storage.count("State"), state_len)
+        new_state_1 = State(name="California")
+        new_state_1.save()
+        new_state_2 = State(name="Iowa")
+        new_state_2.save()
+        self.assertEqual(storage.count(), initial_length + 2)
+        self.assertEqual(storage.count("State"), state_len + 2)
